@@ -1,0 +1,17 @@
+#!/bin/bash
+echo "Write 1 to open nano"
+echo "Write 2 to open vi"
+echo "Write 3 to open links"
+echo "Write 4 to quit"
+read a
+if [[ $a -eq 1 ]]
+then /usr/bin/nano
+else case $a in
+2 )
+/usr/bin/vi
+;;
+3 )
+/usr/bin/links
+;;
+esac
+fi
