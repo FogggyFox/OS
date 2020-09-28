@@ -6,7 +6,7 @@ echo "Write 4 to quit"
 read a
 if [[ $a -eq 1 ]]
 then /usr/bin/nano
-else case $a in
+case $a in
 2 )
 /usr/bin/vi
 ;;
