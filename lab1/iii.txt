@@ -4,9 +4,10 @@ echo "Write 2 to open vi"
 echo "Write 3 to open links"
 echo "Write 4 to quit"
 read a
-if [[ $a -eq 1 ]]
-then /usr/bin/nano
 case $a in
+1)
+/usr/bin/nano
+;;
 2 )
 /usr/bin/vi
 ;;
@@ -14,4 +15,3 @@ case $a in
 /usr/bin/links
 ;;
 esac
-fi
