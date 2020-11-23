@@ -1,0 +1,9 @@
+#!/bin/bash
+for i in $(ps -Af | awk '{print $2}') 
+do
+ppid=$(cat /proc/"$i"/status 2>/dev/null | awk '{if ($1 == "PPid:") print $2}')
+art=$(cat /proc/"$i"/sched 2>/dev/null | awk '{if ($1 == "se.sum_exec_runtime") a=$3; if ($1 == "nr_switches") b=$3; if (-n a && -n b && b!=0) {print a/b; b=0}}')
+if [[ -n "$ppid" && -n "$art" ]]
+then echo "$i $ppid $art"
+fi
+done | sort -n -k 2 | awk '{print "ProcessID="$1" : ParentProcessID="$2" : Average_Running_Time="$3""}' > n4.txt

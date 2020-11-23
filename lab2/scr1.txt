@@ -1,0 +1,4 @@
+#!/bin/bash
+ps -U user -o pid,command 
+let a=$(wc -l < sc1.tmp)-1
+echo $a

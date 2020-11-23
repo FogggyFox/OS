@@ -1,0 +1,40 @@
+#!/bin/bash
+echo "" > before.txt
+IFS=$'\n'
+
+for var in $(ps --no-headers -Af | awk '{print $2 " " $8}')
+do
+pid=$(echo $var | awk '{print $1}')
+bytes=$(cat /proc/$pid/io 2>/dev/null | grep "read_bytes" | awk '{print $2}')
+str=$(echo $var | awk '{print $2}')
+echo "$pid $str $bytes" >> before.txt
+done
+
+sleep 60
+
+echo "" > after.txt
+for var in $(ps --no-headers -Af | awk '{print $2 " " $8}')
+do
+pid=$(echo $var | awk '{print $1}')
+bytes=$(cat /proc/$pid/io 2>/dev/null | grep "read_bytes" | awk '{print $2}')
+str=$(echo $var | awk '{print $2}')
+echo "$pid $str $bytes" >> after.txt
+done
+
+for var in $(cat after.txt)
+do
+pidtmp=$(echo $var | awk '{print $1}')
+bytesa=$(echo $var | awk '{print $3}')
+str=$(echo $var | awk '{print $2}')
+bytesb=$(cat before.txt | awk -v pid="$pidtmp" '{if ($1 == pid) print $3}')
+if [[ $bytesb == "" ]]
+then
+continue
+fi
+
+delta=$(echo "$bytesa - $bytesb" | bc)
+echo "$pidtmp:$str:$delta"
+
+done | sort -n -r -k 3 | head -n 3
+
+rm after.txt before.txt

@@ -1,0 +1,31 @@
+#!/bin/bash
+IFS=$'\n'
+> sc5.tmp
+ppid=$(cat sc4.tmp | head -n 1 | awk '{print $3}')
+count=1
+art=0
+
+for i in $(cat sc4.tmp)
+do
+ppidtmp=$(echo "$i" | awk '{print $3}')
+arttmp=$(echo "$i" | awk -F= '{print $4}')
+
+if [[ "$ppidtmp" == "$ppid" ]];
+then
+count=$(($n+1))
+art=$(echo "scale=9; $art+$arttmp" | bc)
+
+else
+M=$(echo "$ppid" | awk -F= '{print $2}')
+N=$(echo "scale=5; $art/$count" | bc)
+echo "Average_Sleeping_Children_of_ParentID=$M is $N" >> sc5.tmp
+ppid=$ppidtmp
+count=1
+art=$arttmp
+fi
+echo "$i" >> sc5.tmp
+done
+
+M=$(echo "$ppid" | awk -F= '{print $2}')
+N=$(echo "scale=5; $art/$count" | bc)
+echo "Average_Sleeping_Children_of_ParentID=$M is $N" >> sc5.tmp
